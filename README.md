@@ -19,3 +19,11 @@
   * [ ] code files
   * [ ] output screenshots
   * [ ] slides
+
+## Normal Queue implmentation
+We implment 2 main methods `enqueue()` for adding an item to the end of the queue (tail, rear...)
+and `dequeue()` to remove the (head, front...) item from the queue
+
+| Enqueue | Dequeue |
+| --- | --- |
+| ![Enqueue visualization](./assets/enqueue.svg) | ![Dequeue visualization](./assets/dequeue.svg) |

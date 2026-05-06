@@ -27,16 +27,16 @@ void priorityQueue::enqueue(int data, int priority) {
     temp->data = data;
     temp->priority = priority;
 
-    // if empty queue add node
-    if (head == NULL || priority < head->priority) {
+    // if empty queue or highest priority, insert at head
+    if (head == NULL || priority > head->priority) {
         temp->link = head;
         head = temp;
 
     // if not empty, walk through the list 
     } else {
         q = head;
-        // while not at end and node priority is less than priority keep going
-        while (q->link != NULL && q->link->priority <= priority)
+        // while not at end and next node has higher or equal priority keep going
+        while (q->link != NULL && q->link->priority >= priority)
             q = q->link;
         temp->link = q->link;
         q->link = temp;

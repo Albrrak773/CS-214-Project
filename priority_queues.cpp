@@ -1,37 +1,49 @@
 #include "iostream"
 using namespace std;
-class queue {
+class priorityQueue {
   private:
     struct node {
+        int priority;
         int data;
         node *link;
-    } *head, *tail;
+    } *head;
 
   public:
-    queue();
-    void enqueue(int item);
+    priorityQueue();
+    void enqueue(int data, int priority);
     int dequeue();
     void display();
-    ~queue();
+    ~priorityQueue();
 };
 
 // initializing a data member
-queue::queue() { head = tail = NULL; }
+priorityQueue::priorityQueue() { head = NULL; }
 
-void queue::enqueue(int item) {
-    node *temp;
+void priorityQueue::enqueue(int data, int priority) {
+
+    // inti data
+    node *temp, *q;
     temp = new node;
-    temp->data = item;
-    temp->link = NULL;
-    if (head == NULL) {
-        tail = head = temp;
-        return;
+    temp->data = data;
+    temp->priority = priority;
+
+    // if empty queue add node
+    if (head == NULL || priority < head->priority) {
+        temp->link = head;
+        head = temp;
+
+    // if not empty, walk through the list 
+    } else {
+        q = head;
+        // while not at end and node priority is less than priority keep going
+        while (q->link != NULL && q->link->priority <= priority)
+            q = q->link;
+        temp->link = q->link;
+        q->link = temp;
     }
-    tail->link = temp;
-    tail = tail->link;
 }
 
-int queue::dequeue() {
+int priorityQueue::dequeue() {
     if (head == NULL) {
         cout << "Queue is empty" << endl;
         return NULL;
@@ -45,38 +57,22 @@ int queue::dequeue() {
     return item;
 }
 
-void queue::display() {
+void priorityQueue::display() {
     if (head == NULL) {
         cout << "Queue is empty" << endl;
         return;
     }
-    // get queue length
-    int count = 0;
     node *p = head;
     while (p != NULL) {
-        count++;
-        p = p->link;
-    }
-
-    // add queue elements to array
-    int *values = new int[count];
-    p = head;
-    for (int i = 0; i < count; i++) {
-        values[i] = p->data;
-        p = p->link;
-    }
-
-    // print queue from tail to head "backwards".
-    for (int i = count - 1; i >= 0; i--) {
-        cout << values[i];
-        if (i != 0)
+        cout << "(" << p->data << ", p=" << p->priority << ")";
+        if (p->link != NULL)
             cout << " -> ";
+        p = p->link;
     }
-    delete[] values;
     cout << endl;
 }
 
-queue::~queue() {
+priorityQueue::~priorityQueue() {
     if (head == NULL)
         return;
     node *temp;
@@ -87,13 +83,13 @@ queue::~queue() {
     }
 }
 int main() {
-    queue q;
+    priorityQueue q;
     cout << "enqueing 10..." << endl;
-    q.enqueue(10);
+    q.enqueue(10, 1);
     cout << "enqueing 20..." << endl;
-    q.enqueue(20);
+    q.enqueue(20, 0);
     cout << "enqueing 30..." << endl;
-    q.enqueue(30);
+    q.enqueue(30, 2);
     cout << "Queue: ";
     q.display();
     cout << "Dequeing..." << endl;

@@ -1,7 +1,4 @@
-#include "iostream"
-#include "fstream"
-#include "cstring"
-using namespace std;
+#include "priority_queues.h"
 
 #define CLEAR system("clear")
 #define PAUSE                                                               \
@@ -11,24 +8,6 @@ using namespace std;
         cin.get();                                                          \
     } while (0)
 #define PERSISTANCE_FILE "queue_dump.txt"
-class priorityQueue {
-  private:
-    struct node {
-        int priority;
-        int data;
-        node *link;
-    } *head;
-    string filename;
-
-  public:
-    priorityQueue(string filename);
-    void load_pq_from_file();
-    void enqueue(int data, int priority);
-    int dequeue();
-    void display();
-    void dump_to_file();
-    ~priorityQueue();
-};
 
 priorityQueue::priorityQueue(string filename) { head = NULL; this->filename = filename; }
 
@@ -49,21 +28,16 @@ void priorityQueue::load_pq_from_file() {
 
 void priorityQueue::enqueue(int data, int priority) {
 
-    // inti data
     node *temp, *q;
     temp = new node;
     temp->data = data;
     temp->priority = priority;
 
-    // if empty queue or highest priority, insert at head
     if (head == NULL || priority > head->priority) {
         temp->link = head;
         head = temp;
-
-    // if not empty, walk through the list 
     } else {
         q = head;
-        // while not at end and next node has higher or equal priority keep going
         while (q->link != NULL && q->link->priority >= priority)
             q = q->link;
         temp->link = q->link;
@@ -120,6 +94,7 @@ priorityQueue::~priorityQueue() {
         delete temp;
     }
 }
+
 void pq_menu(priorityQueue &pq) {
     int choice = -1;
     int data, priority;

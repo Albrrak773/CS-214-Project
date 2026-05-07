@@ -1,4 +1,5 @@
 #include "iostream"
+#include "fstream"
 using namespace std;
 class priorityQueue {
   private:
@@ -7,17 +8,18 @@ class priorityQueue {
         int data;
         node *link;
     } *head;
+    string filename;
 
   public:
-    priorityQueue();
+    priorityQueue(string filename);
     void enqueue(int data, int priority);
     int dequeue();
     void display();
+    void dump_to_file();
     ~priorityQueue();
 };
 
-// initializing a data member
-priorityQueue::priorityQueue() { head = NULL; }
+priorityQueue::priorityQueue(string filename) { head = NULL; this->filename = filename; }
 
 void priorityQueue::enqueue(int data, int priority) {
 
@@ -41,6 +43,7 @@ void priorityQueue::enqueue(int data, int priority) {
         temp->link = q->link;
         q->link = temp;
     }
+    dump_to_file();
 }
 
 int priorityQueue::dequeue() {
@@ -54,6 +57,7 @@ int priorityQueue::dequeue() {
     temp = head;
     head = head->link;
     delete temp;
+    dump_to_file();
     return item;
 }
 
@@ -72,6 +76,16 @@ void priorityQueue::display() {
     cout << endl;
 }
 
+void priorityQueue::dump_to_file() {
+    ofstream file(filename);
+    node *p = head;
+    while (p != NULL) {
+        file << p->data << "," << p->priority << endl;
+        p = p->link;
+    }
+    file.close();
+}
+
 priorityQueue::~priorityQueue() {
     if (head == NULL)
         return;
@@ -83,7 +97,7 @@ priorityQueue::~priorityQueue() {
     }
 }
 int main() {
-    priorityQueue q;
+    priorityQueue q("queue_dump.txt");
     cout << "enqueing 10..." << endl;
     q.enqueue(10, 1);
     cout << "enqueing 20..." << endl;

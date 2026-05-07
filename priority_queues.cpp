@@ -1,6 +1,14 @@
 #include "iostream"
 #include "fstream"
 using namespace std;
+
+#define CLEAR system("clear")
+#define PAUSE                                                               \
+    do {                                                                    \
+        cout << "\nPress Enter to continue...";                             \
+        cin.ignore();                                                       \
+        cin.get();                                                          \
+    } while (0)
 class priorityQueue {
   private:
     struct node {
@@ -96,19 +104,55 @@ priorityQueue::~priorityQueue() {
         delete temp;
     }
 }
+void pq_menu(priorityQueue &pq) {
+    int choice = -1;
+    int data, priority;
+
+    while (choice != 0) {
+        CLEAR;
+
+        cout << "1. Enqueue." << endl;
+        cout << "2. Dequeue." << endl;
+        cout << "3. Display." << endl;
+        cout << "0. Exit." << endl;
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            CLEAR;
+            cout << "Enter data: ";
+            cin >> data;
+            cout << "Enter priority: ";
+            cin >> priority;
+            pq.enqueue(data, priority);
+            cout << "Enqueued (" << data << ", p=" << priority << ")" << endl;
+            PAUSE;
+            break;
+        case 2:
+            CLEAR;
+            data = pq.dequeue();
+            if (data != NULL)
+                cout << "Dequeued value: " << data << endl;
+            PAUSE;
+            break;
+        case 3:
+            CLEAR;
+            cout << "Queue values: \n" << endl;
+            pq.display();
+            PAUSE;
+            break;
+        case 0:
+            return;
+        default:
+            cout << "Invalid choice, enter another number." << endl;
+            PAUSE;
+        }
+    }
+}
+
 int main() {
-    priorityQueue q("queue_dump.txt");
-    cout << "enqueing 10..." << endl;
-    q.enqueue(10, 1);
-    cout << "enqueing 20..." << endl;
-    q.enqueue(20, 0);
-    cout << "enqueing 30..." << endl;
-    q.enqueue(30, 2);
-    cout << "Queue: ";
-    q.display();
-    cout << "Dequeing..." << endl;
-    q.dequeue();
-    cout << "After dequeue: ";
-    q.display();
+    priorityQueue pq("queue_dump.txt");
+    pq_menu(pq);
     return 0;
 }

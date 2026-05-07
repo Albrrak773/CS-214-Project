@@ -1,5 +1,6 @@
 #include "iostream"
 #include "fstream"
+#include "cstring"
 using namespace std;
 
 #define CLEAR system("clear")
@@ -9,6 +10,7 @@ using namespace std;
         cin.ignore();                                                       \
         cin.get();                                                          \
     } while (0)
+#define PERSISTANCE_FILE "queue_dump.txt"
 class priorityQueue {
   private:
     struct node {
@@ -20,6 +22,7 @@ class priorityQueue {
 
   public:
     priorityQueue(string filename);
+    void load_pq_from_file();
     void enqueue(int data, int priority);
     int dequeue();
     void display();
@@ -28,6 +31,21 @@ class priorityQueue {
 };
 
 priorityQueue::priorityQueue(string filename) { head = NULL; this->filename = filename; }
+
+void priorityQueue::load_pq_from_file() {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        ofstream create(filename);
+        create.close();
+        return;
+    }
+    int data, priority;
+    char comma;
+    while (file >> data >> comma >> priority) {
+        enqueue(data, priority);
+    }
+    file.close();
+}
 
 void priorityQueue::enqueue(int data, int priority) {
 
@@ -51,7 +69,6 @@ void priorityQueue::enqueue(int data, int priority) {
         temp->link = q->link;
         q->link = temp;
     }
-    dump_to_file();
 }
 
 int priorityQueue::dequeue() {
@@ -65,7 +82,6 @@ int priorityQueue::dequeue() {
     temp = head;
     head = head->link;
     delete temp;
-    dump_to_file();
     return item;
 }
 
@@ -143,6 +159,7 @@ void pq_menu(priorityQueue &pq) {
             PAUSE;
             break;
         case 0:
+            pq.dump_to_file();
             return;
         default:
             cout << "Invalid choice, enter another number." << endl;
@@ -152,7 +169,8 @@ void pq_menu(priorityQueue &pq) {
 }
 
 int main() {
-    priorityQueue pq("queue_dump.txt");
+    priorityQueue pq(PERSISTANCE_FILE);
+    pq.load_pq_from_file();
     pq_menu(pq);
     return 0;
 }
